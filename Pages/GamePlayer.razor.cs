@@ -31,18 +31,22 @@ public partial class GamePlayer(ILogger<GamePlayer> logger, GameService gameServ
 
                 var thisReference = DotNetObjectReference.Create(this);
                 await jsRuntime.InvokeVoidAsync("addOrientationListener", thisReference);
+                await jsRuntime.InvokeVoidAsync("addCardListener", thisReference);
             }
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void Throw()
+    [JSInvokable]
+    public void Throw()
     {
+        logger.LogInformation("Throw");
         if (Game is not var (game, playerId))
         {
             return;
         }
 
+        logger.LogInformation("Throw {playerId}", playerId);
         game.Throw(playerId);
     }
 

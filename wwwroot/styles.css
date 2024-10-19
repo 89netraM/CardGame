@@ -43,3 +43,17 @@
         height: 100%;
     }
 }
+
+#card {
+    height: 60vw;
+    width: 101vw;
+    transform: translate(-50%, -50%) rotate(90deg);
+    position: fixed;
+    top: 75%;
+    left: 50%;
+
+    background-image: url("card.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}

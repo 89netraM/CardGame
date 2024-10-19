@@ -9,7 +9,8 @@
 
 <h1>Game - <em>@(GameId)</em></h1>
 
-<button @onclick="Throw">Throw</button>
+<div id="card"></div>
+
 <button @onclick="ResetAim">Reset Aim</button>
 
 <script>
@@ -28,5 +29,41 @@
             dotNetHelper.invokeMethodAsync("OnOrientationReading", sensor.quaternion);
         });
         sensor.start();
+    }
+
+    function addCardListener(dotNetHelper) {
+        const card = document.getElementById("card");
+
+        let touchPosition;
+        let position = { x: 0, y: 0 };
+
+        card.addEventListener("touchstart", event => {
+            event.preventDefault();
+
+            touchPosition = { x: event.changedTouches[0].screenX, y: event.changedTouches[0].screenY };
+        });
+
+        card.addEventListener("touchmove", event => {
+            event.preventDefault();
+
+            position.x += event.changedTouches[0].screenX - touchPosition.x;
+            position.y += event.changedTouches[0].screenY - touchPosition.y;
+            touchPosition = { x: event.changedTouches[0].screenX, y: event.changedTouches[0].screenY };
+
+            card.style.top = `calc(75% + ${position.y}px)`;
+            card.style.left = `calc(50% + ${position.x}px)`;
+        });
+
+        card.addEventListener("touchend", async event => {
+            event.preventDefault();
+
+            if (position.y < window.screen.availHeight * -0.4) {
+                dotNetHelper.invokeMethodAsync("Throw");
+            }
+
+            position = { x: 0, y: 0 };
+            card.style.top = "75%";
+            card.style.left = "50%";
+        });
     }
 </script>
