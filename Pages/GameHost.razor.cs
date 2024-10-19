@@ -68,7 +68,7 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
 
     private void OnPlayerJoin(Guid playerId)
     {
-        Players[playerId] = new(GetRandomColor(playerId), Vector2.Zero);
+        Players[playerId] = new(GetRandomColor(playerId), Vector2.Zero, 0);
         _ = InvokeAsync(StateHasChanged);
     }
 
@@ -87,6 +87,11 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
 
     private async Task OnPlayerThrow(Guid playerId)
     {
+        if (!Players.TryGetValue(playerId, out var player))
+        {
+            return;
+        }
+
         var hitId = await jsRuntime.InvokeAsync<int?>("throwCard", playerId.ToString());
         if (hitId is not int hit || !Ninjas[hit])
         {
@@ -94,6 +99,7 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
         }
 
         Ninjas[hit] = false;
+        Players[playerId] = player with { Score = player.Score + 1 };
         await InvokeAsync(StateHasChanged);
     }
 
@@ -108,5 +114,5 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
         gameService.DeleteGame(Game.GameId);
     }
 
-    private record Player(int Hue, Vector2 Angle);
+    private record Player(int Hue, Vector2 Angle, int Score);
 }

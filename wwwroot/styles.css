@@ -106,3 +106,23 @@
         }
     }
 }
+
+.scoreboard {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    background-color: #00000069;
+    color: #ffffff;
+    padding-left: 2ch;
+    padding-right: 2ch;
+    font-size: 1.5rem;
+
+    p {
+        .block {
+            width: 1ch;
+            height: 1em;
+            display: inline-block;
+            background-color: #6503ba;
+        }
+    }
+}

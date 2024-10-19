@@ -14,6 +14,13 @@
     <div id="@id" class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@(player.Angle.X)vw, @(player.Angle.Y)vh);"></div>
 }
 
+<div class="scoreboard">
+    @foreach (var (id, player) in Players)
+    {
+        <p><span class="block" style="filter: hue-rotate(@(player.Hue)deg);"></span> @player.Score</p>
+    }
+</div>
+
 <script>
     function throwCard(playerId) {
         const cursor = document.getElementById(playerId);
