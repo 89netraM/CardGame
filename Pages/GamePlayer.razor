@@ -10,3 +10,23 @@
 <h1>Game - <em>@(GameId)</em></h1>
 
 <button @onclick="Throw">Throw</button>
+<button @onclick="ResetAim">Reset Aim</button>
+
+<script>
+    async function addOrientationListener(dotNetHelper) {
+        const results = await Promise.all([
+            navigator.permissions.query({ name: "accelerometer" }),
+            navigator.permissions.query({ name: "gyroscope" }),
+        ]);
+        if (results.some(r => r.state !== "granted")) {
+            alert("Please enable the accelerometer and gyroscope");
+            return;
+        }
+
+        const sensor = new RelativeOrientationSensor({ frequency: 30, referenceFrame: "device" });
+        sensor.addEventListener("reading", () => {
+            dotNetHelper.invokeMethodAsync("OnOrientationReading", sensor.quaternion);
+        });
+        sensor.start();
+    }
+</script>

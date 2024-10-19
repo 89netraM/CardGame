@@ -4,5 +4,5 @@
 
 @foreach (var player in Players.Values)
 {
-    <div class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@player.Angle.X, @player.Angle.Y);"></div>
+    <div class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@(player.Angle.X)vw, @(player.Angle.Y)vh);"></div>
 }

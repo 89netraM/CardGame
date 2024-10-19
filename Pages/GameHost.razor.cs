@@ -9,6 +9,8 @@ namespace CardGame.Pages;
 
 public partial class GameHost(ILogger<GameHost> logger, GameService gameService) : ComponentBase, IDisposable
 {
+    private readonly Vector2 AimScale = new(64.0f, 64.0f);
+    
     private Game Game { get; } = gameService.CreateGame();
 
     private Dictionary<Guid, Player> Players { get; } = [];
@@ -31,6 +33,9 @@ public partial class GameHost(ILogger<GameHost> logger, GameService gameService)
             case PlayerAction.Join(var id):
                 OnPlayerJoin(id);
                 break;
+            case PlayerAction.Aim(var id, var angle):
+                OnPlayerAim(id, angle);
+                break;
             case PlayerAction.Leave(var id):
                 OnPlayerLeave(id);
                 break;
@@ -47,6 +52,17 @@ public partial class GameHost(ILogger<GameHost> logger, GameService gameService)
     }
 
     private static int GetRandomColor(Guid playerId) => playerId.GetHashCode() % 360;
+
+    private void OnPlayerAim(Guid playerId, Vector2 angle)
+    {
+        if (!Players.TryGetValue(playerId, out var player))
+        {
+            return;
+        }
+
+        Players[playerId] = player with { Angle = angle * AimScale };
+        _ = InvokeAsync(StateHasChanged);
+    }
 
     private void OnPlayerLeave(Guid playerId)
     {
