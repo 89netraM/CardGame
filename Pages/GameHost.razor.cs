@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Timers;
 using CardGame.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,9 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
 
     private Dictionary<Guid, Player> Players { get; } = [];
 
-    private bool[] Ninjas { get; } = [true, true, true, true, true, true, true];
+    private bool[] Ninjas { get; } = [false, false, false, false, false, false, false];
+
+    private Timer timer = new();
 
     private MarkupString? PlayerUrlQrCode;
 
@@ -28,6 +31,11 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
         if (firstRender)
         {
             Game.PlayerAction += OnPlayerAction;
+
+            timer.Interval = TimeSpan.FromSeconds(2).TotalMilliseconds;
+            timer.AutoReset = true;
+            timer.Elapsed += OnTimer;
+            timer.Start();
 
             var playerUrl = navigationManager.ToAbsoluteUri($"/game/{Game.GameId}");
             using var qrCodeGenerator = new QRCodeGenerator();
@@ -101,6 +109,13 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
         await InvokeAsync(StateHasChanged);
     }
 
+    private void OnTimer(object? sender, ElapsedEventArgs e)
+    {
+        var index = Random.Shared.Next(Ninjas.Length);
+        Ninjas[index] = !Ninjas[index];
+        _ = InvokeAsync(StateHasChanged);
+    }
+
     private void OnPlayerLeave(Guid playerId)
     {
         Players.Remove(playerId);
@@ -110,6 +125,8 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
     public void Dispose()
     {
         gameService.DeleteGame(Game.GameId);
+        timer.Elapsed -= OnTimer;
+        timer.Dispose();
     }
 
     private record Player(int Hue, Vector2 Angle, int Score);
