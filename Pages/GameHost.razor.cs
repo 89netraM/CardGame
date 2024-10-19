@@ -3,23 +3,36 @@ using System.Collections.Generic;
 using System.Numerics;
 using CardGame.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Logging;
+using QRCoder;
 
 namespace CardGame.Pages;
 
-public partial class GameHost(ILogger<GameHost> logger, GameService gameService) : ComponentBase, IDisposable
+public partial class GameHost(ILogger<GameHost> logger, NavigationManager navigationManager, GameService gameService)
+    : ComponentBase, IDisposable
 {
     private readonly Vector2 AimScale = new(64.0f, 64.0f);
-    
+
     private Game Game { get; } = gameService.CreateGame();
 
     private Dictionary<Guid, Player> Players { get; } = [];
+
+    private MarkupString? PlayerUrlQrCode;
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             Game.PlayerAction += OnPlayerAction;
+
+            var playerUrl = navigationManager.ToAbsoluteUri($"/game/{Game.GameId}");
+            using var qrCodeGenerator = new QRCodeGenerator();
+            var qrCode = qrCodeGenerator.CreateQrCode(playerUrl.ToString(), QRCodeGenerator.ECCLevel.M);
+            var svgQrCode = new SvgQRCode(qrCode);
+            PlayerUrlQrCode = new(svgQrCode.GetGraphic(
+                1, darkColorHex: "#eab8b2", lightColorHex: "#000735", sizingMode: SvgQRCode.SizingMode.ViewBoxAttribute));
+            StateHasChanged();
         }
 
         base.OnAfterRender(firstRender);
