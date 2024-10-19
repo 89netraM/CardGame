@@ -1,3 +1,8 @@
 @page "/game"
 
-<h1>Game - <em>@(Game.GameId)</em></h1>
+<h1>Game - <em>@Game.GameId</em></h1>
+
+@foreach (var player in Players.Values)
+{
+    <div class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@player.Angle.X, @player.Angle.Y);"></div>
+}

@@ -16,3 +16,36 @@
         top: 0.5rem;
     }
 }
+
+.crosshair {
+    width: 5vmin;
+    height: 5vmin;
+    border-radius: 100%;
+    border-width: 0.5vmin;
+    border-style: solid;
+    border-color: hsl(0, 64%, 59%);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -2.5vmin;
+    margin-top: -2.5vmin;
+
+    &::before, &::after {
+        content: "";
+        background-color: hsl(0, 64%, 59%);
+        display: block;
+        position: relative;
+    }
+    &::before {
+        width: 0.25vmin;
+        height: 5vmin;
+        top: 0px;
+        left: 2.375vmin;
+    }
+    &::after {
+        width: 5vmin;
+        height: 0.25vmin;
+        top: -2.675vmin;
+        left: 0;
+    }
+}
