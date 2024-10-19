@@ -75,6 +75,7 @@
 #foreground {
     background-image: url("foreground.png");
     pointer-events: none;
+    opacity: 0.5;
 }
 
 .ninja {
@@ -103,6 +104,44 @@
         top: 160px;
         &.active {
             transform: rotate(190deg) translate(0, -90px);
+        }
+    }
+    &#ninja-2 {
+        transform: rotate(20deg);
+        left: 500px;
+        top: 440px;
+        &.active {
+            transform: rotate(20deg) translate(0, -90px);
+        }
+    }
+    &#ninja-3 {
+        right: 800px;
+        top: 200px;
+        &:hover {
+            transform: translate(0, -90px);
+        }
+    }
+    &#ninja-4 {
+        right: 600px;
+        top: 200px;
+        &:hover {
+            transform: translate(0, -90px);
+        }
+    }
+    &#ninja-5 {
+        transform: rotate(90deg);
+        right: 410px;
+        top: 400px;
+        &:hover {
+            transform: rotate(90deg) translate(0, -90px);
+        }
+    }
+    &#ninja-6 {
+        transform: rotate(180deg);
+        left: 750px;
+        top: 425px;
+        &:hover {
+            transform: rotate(180deg) translate(0, -90px);
         }
     }
 }

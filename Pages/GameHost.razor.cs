@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CardGame.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using QRCoder;
@@ -21,7 +19,7 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
 
     private Dictionary<Guid, Player> Players { get; } = [];
 
-    private bool[] Ninjas { get; } = [true, true];
+    private bool[] Ninjas { get; } = [true, true, true, true, true, true, true];
 
     private MarkupString? PlayerUrlQrCode;
 
