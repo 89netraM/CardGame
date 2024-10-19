@@ -1,7 +1,26 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Card Game</h1>
 
-Welcome to your new app.
+<InputText @bind-Value="Code" />
+<button @onclick="JoinGame">Join Game</button>
+
+<button @onclick="NewGame">New Game</button>
+
+@code
+{
+    private string Code { get; set; } = "";
+
+    private void JoinGame()
+    {
+        NavigationManager.NavigateTo($"/game/{Code}");
+    }
+
+    private void NewGame()
+    {
+        NavigationManager.NavigateTo("/game");
+    }
+}

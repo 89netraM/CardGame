@@ -1,0 +1,12 @@
+@page "/game/{GameId}"
+
+@if (Game is null)
+{
+    <p>Game with id <em>@(GameId)</em> not found</p>
+    <p><a href="/">Back to start</a></p>
+    return;
+}
+
+<h1>Game - <em>@(GameId)</em></h1>
+
+<button @onclick="Throw">Throw</button>
