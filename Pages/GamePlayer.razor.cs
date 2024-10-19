@@ -40,13 +40,11 @@ public partial class GamePlayer(ILogger<GamePlayer> logger, GameService gameServ
     [JSInvokable]
     public void Throw()
     {
-        logger.LogInformation("Throw");
         if (Game is not var (game, playerId))
         {
             return;
         }
 
-        logger.LogInformation("Throw {playerId}", playerId);
         game.Throw(playerId);
     }
 

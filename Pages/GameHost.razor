@@ -1,10 +1,29 @@
 @page "/game"
 
-<h1>Game - <em>@Game.GameId</em></h1>
+<div id="background"></div>
 
-@foreach (var player in Players.Values)
-{
-    <div class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@(player.Angle.X)vw, @(player.Angle.Y)vh);"></div>
-}
+<div id="ninja-0" class="ninja @(Ninjas[0] ? "active" : "")"></div>
+<div id="ninja-1" class="ninja @(Ninjas[1] ? "active" : "")"></div>
+
+<div id="foreground"></div>
 
 <div id="player-qr-code">@PlayerUrlQrCode</div>
+
+@foreach (var (id, player) in Players)
+{
+    <div id="@id" class="crosshair" style="filter: hue-rotate(@(player.Hue)deg); transform: translate(@(player.Angle.X)vw, @(player.Angle.Y)vh);"></div>
+}
+
+<script>
+    function throwCard(playerId) {
+        const cursor = document.getElementById(playerId);
+        const cursorRect = cursor.getBoundingClientRect();
+        const x = cursorRect.x + cursorRect.width / 2;
+        const y = cursorRect.y + cursorRect.height / 2;
+        const hitElement = document.elementFromPoint(x, y);
+        if (hitElement == null || !hitElement.id.startsWith("ninja-")) {
+            return null;
+        }
+        return parseInt(hitElement.id.substring(6));
+    }
+</script>

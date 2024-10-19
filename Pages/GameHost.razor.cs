@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using CardGame.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using QRCoder;
 
 namespace CardGame.Pages;
 
-public partial class GameHost(ILogger<GameHost> logger, NavigationManager navigationManager, GameService gameService)
+public partial class GameHost(ILogger<GameHost> logger, NavigationManager navigationManager, IJSRuntime jsRuntime, GameService gameService)
     : ComponentBase, IDisposable
 {
     private readonly Vector2 AimScale = new(64.0f, 64.0f);
@@ -17,6 +20,8 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
     private Game Game { get; } = gameService.CreateGame();
 
     private Dictionary<Guid, Player> Players { get; } = [];
+
+    private bool[] Ninjas { get; } = [true, true];
 
     private MarkupString? PlayerUrlQrCode;
 
@@ -49,6 +54,9 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
             case PlayerAction.Aim(var id, var angle):
                 OnPlayerAim(id, angle);
                 break;
+            case PlayerAction.Throw(var id):
+                _ = OnPlayerThrow(id);
+                break;
             case PlayerAction.Leave(var id):
                 OnPlayerLeave(id);
                 break;
@@ -75,6 +83,18 @@ public partial class GameHost(ILogger<GameHost> logger, NavigationManager naviga
 
         Players[playerId] = player with { Angle = angle * AimScale };
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnPlayerThrow(Guid playerId)
+    {
+        var hitId = await jsRuntime.InvokeAsync<int?>("throwCard", playerId.ToString());
+        if (hitId is not int hit || !Ninjas[hit])
+        {
+            return;
+        }
+
+        Ninjas[hit] = false;
+        await InvokeAsync(StateHasChanged);
     }
 
     private void OnPlayerLeave(Guid playerId)

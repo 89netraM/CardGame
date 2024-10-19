@@ -7,7 +7,6 @@
     padding: 0.6rem 1.25rem 0.7rem 1.25rem;
     position: fixed;
     width: 100%;
-    z-index: 1000;
 
     .dismiss {
         cursor: pointer;
@@ -29,6 +28,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    pointer-events: none;
 }
 
 #player-qr-code {
@@ -56,4 +56,53 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+#background, #foreground {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+#background {
+    background-image: url("background.jpg");
+}
+#foreground {
+    background-image: url("foreground.png");
+    pointer-events: none;
+}
+
+.ninja {
+    background-image: url("ninja.webp");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    width: 10vmin;
+    height: 10vmin;
+
+    position: fixed;
+
+    transition: transform 0.5s ease-in-out;
+
+    &#ninja-0 {
+        left: 100px;
+        bottom: 90px;
+        &.active {
+            transform: translate(0, -90px);
+        }
+    }
+    &#ninja-1 {
+        transform: rotate(190deg);
+        left: 380px;
+        top: 160px;
+        &.active {
+            transform: rotate(190deg) translate(0, -90px);
+        }
+    }
 }
